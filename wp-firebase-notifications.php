@@ -50,9 +50,12 @@ class Firebase_Push_Notification
     {
         $content = $post->post_title;
         $post_categories = wp_get_post_categories($post_id);
-        $category = '';
+        $category = 'Uncategorized';
         foreach ($post_categories as $c) {
-            $category = get_category($c)->name;
+            $category_name = get_category($c)->name;
+            if ($category_name != 'Uncategorized') {
+                $category = $category_name;
+            }
             break;
         }
 
@@ -74,7 +77,7 @@ class Firebase_Push_Notification
         update_post_meta($post_id, 'is_published', true);
     }
 
-    public function fcm_notification($content, $post_type, $post_id)
+    public function fcm_notification($content, $category, $post_id)
     {
         $topic = "'" . get_option('fcm_topic') . "' in topics";
         $apiKey = get_option('fcm_api');
@@ -87,7 +90,7 @@ class Firebase_Push_Notification
         $notification_data = array(
             // when application open then post field 'data' parameter work so 'message' and 'body' key should have same text or value
             'message' => $content,
-            'type' => $post_type,
+            'category' => $category,
             'post_id' => $post_id,
         );
 
