@@ -49,14 +49,14 @@ class Firebase_Push_Notification
     public function fcm_on_post_publish($post_id, $post)
     {
         $content = $post->post_title;
-        $post_categories = wp_get_post_categories($post_id);
+        $post_categories = get_the_category($post_id);
         $category = 'Uncategorized';
         foreach ($post_categories as $c) {
             $category_name = get_category($c)->name;
             if ($category_name != 'Uncategorized') {
                 $category = $category_name;
+                break;
             }
-            break;
         }
 
         $disabled = get_option('fcm_disable');
